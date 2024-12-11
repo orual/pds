@@ -9,17 +9,17 @@ export $(cat "${PDS_ENV_FILE}" | grep -v ^# | xargs) >/dev/null
 
 # curl a URL and fail if the request fails.
 function curl_cmd_get {
-  curl --fail --show-error "$@"
+  curl --fail --trace log.txt --show-error "$@"
 }
 
 # curl a URL and fail if the request fails.
 function curl_cmd_post {
-  curl --fail --show-error --request POST --header "Content-Type: application/json" "$@"
+  curl --fail --trace log1.txt --show-error --request POST --header "Content-Type: application/json" "$@"
 }
 
 # curl a URL but do not fail if the request fails.
 function curl_cmd_post_nofail {
-  curl  --show-error --request POST --header "Content-Type: application/json" "$@"
+  curl  --show-error --trace log2.txt --request POST --header "Content-Type: application/json" "$@"
 }
 
 # The subcommand to run.
