@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/env/bin/bash
 set -o errexit
 set -o nounset
 set -o pipefail
 
-PDSADMIN_BASE_URL="https://raw.githubusercontent.com/bluesky-social/pds/main/pdsadmin"
+PDSADMIN_BASE_URL="https://raw.githubusercontent.com/orual/pds/main/pdsadmin"
 
 # Command to run.
 COMMAND="${1:-help}"
