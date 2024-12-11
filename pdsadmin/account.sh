@@ -8,17 +8,17 @@ source "${PDS_ENV_FILE}"
 
 # curl a URL and fail if the request fails.
 function curl_cmd_get {
-  curl --fail --silent --show-error "$@"
+  curl --fail-body --show-error "$@"
 }
 
 # curl a URL and fail if the request fails.
 function curl_cmd_post {
-  curl --fail --silent --show-error --request POST --header "Content-Type: application/json" "$@"
+  curl --fail-body --show-error --request POST --header "Content-Type: application/json" "$@"
 }
 
 # curl a URL but do not fail if the request fails.
 function curl_cmd_post_nofail {
-  curl --silent --show-error --request POST --header "Content-Type: application/json" "$@"
+  curl  --show-error --request POST --header "Content-Type: application/json" "$@"
 }
 
 # The subcommand to run.
