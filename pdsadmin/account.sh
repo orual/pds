@@ -8,12 +8,12 @@ source "${PDS_ENV_FILE}"
 
 # curl a URL and fail if the request fails.
 function curl_cmd_get {
-  curl --fail-body --show-error "$@"
+  curl --fail --show-error "$@"
 }
 
 # curl a URL and fail if the request fails.
 function curl_cmd_post {
-  curl --fail-body --show-error --request POST --header "Content-Type: application/json" "$@"
+  curl --fail --show-error --request POST --header "Content-Type: application/json" "$@"
 }
 
 # curl a URL but do not fail if the request fails.
