@@ -4,7 +4,7 @@ set -o nounset
 set -o pipefail
 
 PDS_ENV_FILE=${PDS_ENV_FILE:-"/pds/pds.env"}
-source "${PDS_ENV_FILE}"
+export $(cat "${PDS_ENV_FILE}" | grep -v ^# | xargs) >/dev/null
 
 RELAY_HOSTS="${1:-}"
 if [[ "${RELAY_HOSTS}" == "" ]]; then
