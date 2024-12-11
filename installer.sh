@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -o errexit
 set -o nounset
 set -o pipefail
@@ -16,10 +16,10 @@ GENERATE_SECURE_SECRET_CMD="openssl rand --hex 16"
 GENERATE_K256_PRIVATE_KEY_CMD="openssl ecparam --name secp256k1 --genkey --noout --outform DER | tail --bytes=+8 | head --bytes=32 | xxd --plain --cols 32"
 
 # The Docker compose file.
-COMPOSE_URL="https://raw.githubusercontent.com/bluesky-social/pds/main/compose.yaml"
+COMPOSE_URL="https://raw.githubusercontent.com/orual/pds/main/compose.yaml"
 
 # The pdsadmin script.
-PDSADMIN_URL="https://raw.githubusercontent.com/bluesky-social/pds/main/pdsadmin.sh"
+PDSADMIN_URL="https://raw.githubusercontent.com/orual/pds/main/pdsadmin.sh"
 
 # System dependencies.
 REQUIRED_SYSTEM_PACKAGES="
@@ -84,33 +84,33 @@ function main {
     usage "Sorry, only x86_64 and aarch64/arm64 are supported. Exiting..."
   fi
 
-  # Check for a supported distribution.
-  SUPPORTED_OS="false"
-  if [[ "${DISTRIB_ID}" == "ubuntu" ]]; then
-    if [[ "${DISTRIB_CODENAME}" == "focal" ]]; then
-      SUPPORTED_OS="true"
-      echo "* Detected supported distribution Ubuntu 20.04 LTS"
-    elif [[ "${DISTRIB_CODENAME}" == "jammy" ]]; then
-      SUPPORTED_OS="true"
-      echo "* Detected supported distribution Ubuntu 22.04 LTS"
-    elif [[ "${DISTRIB_CODENAME}" == "mantic" ]]; then
-      SUPPORTED_OS="true"
-      echo "* Detected supported distribution Ubuntu 23.10 LTS"
-    fi
-  elif [[ "${DISTRIB_ID}" == "debian" ]]; then
-    if [[ "${DISTRIB_CODENAME}" == "bullseye" ]]; then
-      SUPPORTED_OS="true"
-      echo "* Detected supported distribution Debian 11"
-    elif [[ "${DISTRIB_CODENAME}" == "bookworm" ]]; then
-      SUPPORTED_OS="true"
-      echo "* Detected supported distribution Debian 12"
-    fi
-  fi
+  # # Check for a supported distribution.
+  # SUPPORTED_OS="false"
+  # if [[ "${DISTRIB_ID}" == "ubuntu" ]]; then
+  #   if [[ "${DISTRIB_CODENAME}" == "focal" ]]; then
+  #     SUPPORTED_OS="true"
+  #     echo "* Detected supported distribution Ubuntu 20.04 LTS"
+  #   elif [[ "${DISTRIB_CODENAME}" == "jammy" ]]; then
+  #     SUPPORTED_OS="true"
+  #     echo "* Detected supported distribution Ubuntu 22.04 LTS"
+  #   elif [[ "${DISTRIB_CODENAME}" == "mantic" ]]; then
+  #     SUPPORTED_OS="true"
+  #     echo "* Detected supported distribution Ubuntu 23.10 LTS"
+  #   fi
+  # elif [[ "${DISTRIB_ID}" == "debian" ]]; then
+  #   if [[ "${DISTRIB_CODENAME}" == "bullseye" ]]; then
+  #     SUPPORTED_OS="true"
+  #     echo "* Detected supported distribution Debian 11"
+  #   elif [[ "${DISTRIB_CODENAME}" == "bookworm" ]]; then
+  #     SUPPORTED_OS="true"
+  #     echo "* Detected supported distribution Debian 12"
+  #   fi
+  # fi
 
-  if [[ "${SUPPORTED_OS}" != "true" ]]; then
-    echo "Sorry, only Ubuntu 20.04, 22.04, Debian 11 and Debian 12 are supported by this installer. Exiting..."
-    exit 1
-  fi
+  # if [[ "${SUPPORTED_OS}" != "true" ]]; then
+  #   echo "Sorry, only Ubuntu 20.04, 22.04, Debian 11 and Debian 12 are supported by this installer. Exiting..."
+  #   exit 1
+  # fi
 
   # Enforce that the data directory is /pds since we're assuming it for now.
   # Later we can make this actually configurable.
@@ -147,7 +147,7 @@ function main {
 
   # First try using the hostname command, which usually works.
   if [[ -z "${PUBLIC_IP}" ]]; then
-    PUBLIC_IP=$(hostname --all-ip-addresses | awk '{ print $1 }')
+    PUBLIC_IP=$(hostname --ip-address | awk '{ print $1 }')
   fi
 
   # Prevent any private IP address from being used, since it won't work.
@@ -231,57 +231,57 @@ INSTALLER_MESSAGE
   #
   # Install system packages.
   #
-  if lsof -v >/dev/null 2>&1; then
-    while true; do
-      apt_process_count="$(lsof -n -t /var/cache/apt/archives/lock /var/lib/apt/lists/lock /var/lib/dpkg/lock | wc --lines || true)"
-      if (( apt_process_count == 0 )); then
-        break
-      fi
-      echo "* Waiting for other apt process to complete..."
-      sleep 2
-    done
-  fi
+  # if lsof -v >/dev/null 2>&1; then
+  #   while true; do
+  #     apt_process_count="$(lsof -n -t /var/cache/apt/archives/lock /var/lib/apt/lists/lock /var/lib/dpkg/lock | wc --lines || true)"
+  #     if (( apt_process_count == 0 )); then
+  #       break
+  #     fi
+  #     echo "* Waiting for other apt process to complete..."
+  #     sleep 2
+  #   done
+  # fi
 
-  apt-get update
-  apt-get install --yes ${REQUIRED_SYSTEM_PACKAGES}
+  # apt-get update
+  # apt-get install --yes ${REQUIRED_SYSTEM_PACKAGES}
 
   #
   # Install Docker
   #
-  if ! docker version >/dev/null 2>&1; then
-    echo "* Installing Docker"
-    mkdir --parents /etc/apt/keyrings
+  # if ! docker version >/dev/null 2>&1; then
+  #   echo "* Installing Docker"
+  #   mkdir --parents /etc/apt/keyrings
 
-    # Remove the existing file, if it exists,
-    # so there's no prompt on a second run.
-    rm --force /etc/apt/keyrings/docker.gpg
-    curl --fail --silent --show-error --location "https://download.docker.com/linux/${DISTRIB_ID}/gpg" | \
-      gpg --dearmor --output /etc/apt/keyrings/docker.gpg
+  #   # Remove the existing file, if it exists,
+  #   # so there's no prompt on a second run.
+  #   rm --force /etc/apt/keyrings/docker.gpg
+  #   curl --fail --silent --show-error --location "https://download.docker.com/linux/${DISTRIB_ID}/gpg" | \
+  #     gpg --dearmor --output /etc/apt/keyrings/docker.gpg
 
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/${DISTRIB_ID} ${DISTRIB_CODENAME} stable" >/etc/apt/sources.list.d/docker.list
+  #   echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/${DISTRIB_ID} ${DISTRIB_CODENAME} stable" >/etc/apt/sources.list.d/docker.list
 
-    apt-get update
-    apt-get install --yes ${REQUIRED_DOCKER_PACKAGES}
-  fi
+  #   apt-get update
+  #   apt-get install --yes ${REQUIRED_DOCKER_PACKAGES}
+  # fi
 
   #
   # Configure the Docker daemon so that logs don't fill up the disk.
   #
-  if ! [[ -e /etc/docker/daemon.json ]]; then
-    echo "* Configuring Docker daemon"
-    cat <<'DOCKERD_CONFIG' >/etc/docker/daemon.json
-{
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "500m",
-    "max-file": "4"
-  }
-}
-DOCKERD_CONFIG
-    systemctl restart docker
-  else
-    echo "* Docker daemon already configured! Ensure log rotation is enabled."
-  fi
+#   if ! [[ -e /etc/docker/daemon.json ]]; then
+#     echo "* Configuring Docker daemon"
+#     cat <<'DOCKERD_CONFIG' >/etc/docker/daemon.json
+# {
+#   "log-driver": "json-file",
+#   "log-opts": {
+#     "max-size": "500m",
+#     "max-file": "4"
+#   }
+# }
+# DOCKERD_CONFIG
+#     systemctl restart docker
+#   else
+#     echo "* Docker daemon already configured! Ensure log rotation is enabled."
+#   fi
 
   #
   # Create data directory.
@@ -357,43 +357,43 @@ PDS_CONFIG
   # Replace the /pds paths with the ${PDS_DATADIR} path.
   sed --in-place "s|/pds|${PDS_DATADIR}|g" "${PDS_DATADIR}/compose.yaml"
 
-  #
-  # Create the systemd service.
-  #
-  echo "* Starting the pds systemd service"
-  cat <<SYSTEMD_UNIT_FILE >/etc/systemd/system/pds.service
-[Unit]
-Description=Bluesky PDS Service
-Documentation=https://github.com/bluesky-social/pds
-Requires=docker.service
-After=docker.service
+#   #
+#   # Create the systemd service.
+#   #
+#   echo "* Starting the pds systemd service"
+#   cat <<SYSTEMD_UNIT_FILE >/etc/systemd/system/pds.service
+# [Unit]
+# Description=Bluesky PDS Service
+# Documentation=https://github.com/bluesky-social/pds
+# Requires=docker.service
+# After=docker.service
 
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-WorkingDirectory=${PDS_DATADIR}
-ExecStart=/usr/bin/docker compose --file ${PDS_DATADIR}/compose.yaml up --detach
-ExecStop=/usr/bin/docker compose --file ${PDS_DATADIR}/compose.yaml down
+# [Service]
+# Type=oneshot
+# RemainAfterExit=yes
+# WorkingDirectory=${PDS_DATADIR}
+# ExecStart=/run/current-system/sw/bin/docker compose --file ${PDS_DATADIR}/compose.yaml up --detach
+# ExecStop=/run/current-system/sw/bin/docker compose --file ${PDS_DATADIR}/compose.yaml down
 
-[Install]
-WantedBy=default.target
-SYSTEMD_UNIT_FILE
+# [Install]
+# WantedBy=default.target
+# SYSTEMD_UNIT_FILE
 
-  systemctl daemon-reload
-  systemctl enable pds
-  systemctl restart pds
+#   systemctl daemon-reload
+#   systemctl enable pds
+#   systemctl restart pds
 
-  # Enable firewall access if ufw is in use.
-  if ufw status >/dev/null 2>&1; then
-    if ! ufw status | grep --quiet '^80[/ ]'; then
-      echo "* Enabling access on TCP port 80 using ufw"
-      ufw allow 80/tcp >/dev/null
-    fi
-    if ! ufw status | grep --quiet '^443[/ ]'; then
-      echo "* Enabling access on TCP port 443 using ufw"
-      ufw allow 443/tcp >/dev/null
-    fi
-  fi
+  # # Enable firewall access if ufw is in use.
+  # if ufw status >/dev/null 2>&1; then
+  #   if ! ufw status | grep --quiet '^80[/ ]'; then
+  #     echo "* Enabling access on TCP port 80 using ufw"
+  #     ufw allow 80/tcp >/dev/null
+  #   fi
+  #   if ! ufw status | grep --quiet '^443[/ ]'; then
+  #     echo "* Enabling access on TCP port 443 using ufw"
+  #     ufw allow 443/tcp >/dev/null
+  #   fi
+  # fi
 
   #
   # Download and install pdadmin.
@@ -403,9 +403,9 @@ SYSTEMD_UNIT_FILE
     --silent \
     --show-error \
     --fail \
-    --output "/usr/local/bin/pdsadmin" \
+    --output "~/.cargo/bin/pdsadmin" \
     "${PDSADMIN_URL}"
-  chmod +x /usr/local/bin/pdsadmin
+  chmod +x ~/.cargo/bin/pdsadmin
 
   cat <<INSTALLER_MESSAGE
 ========================================================================
