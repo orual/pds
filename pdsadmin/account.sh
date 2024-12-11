@@ -6,8 +6,6 @@ set -o pipefail
 PDS_ENV_FILE=${PDS_ENV_FILE:-"/home/orual/pds/pds.env"}
 source "${PDS_ENV_FILE}"
 
-echo "${PDS_HOSTNAME}"
-
 # curl a URL and fail if the request fails.
 function curl_cmd_get {
   curl --fail --silent --show-error "$@"
