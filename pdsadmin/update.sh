@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/env/bin/bash
 set -o errexit
 set -o nounset
 set -o pipefail
 
-PDS_DATADIR="/pds"
+PDS_DATADIR="/home/orual/pds"
 COMPOSE_FILE="${PDS_DATADIR}/compose.yaml"
 COMPOSE_URL="https://raw.githubusercontent.com/bluesky-social/pds/main/compose.yaml"
 
