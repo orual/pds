@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/env/bin/bash
 set -o errexit
 set -o nounset
 set -o pipefail
 
-PDS_ENV_FILE=${PDS_ENV_FILE:-"/pds/pds.env"}
+PDS_ENV_FILE=${PDS_ENV_FILE:-"/home/orual/pds/pds.env"}
 source "${PDS_ENV_FILE}"
 
 curl \
