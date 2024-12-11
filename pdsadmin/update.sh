@@ -3,9 +3,9 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-PDS_DATADIR="/home/orual/pds"
+PDS_DATADIR="/pds"
 COMPOSE_FILE="${PDS_DATADIR}/compose.yaml"
-COMPOSE_URL="https://raw.githubusercontent.com/bluesky-social/pds/main/compose.yaml"
+COMPOSE_URL="https://raw.githubusercontent.com/orual/pds/main/compose.yaml"
 
 # TODO: allow the user to specify a version to update to.
 TARGET_VERSION="${1:-}"
