@@ -49,7 +49,7 @@ if [[ "${SUBCOMMAND}" == "list" ]]; then
 elif [[ "${SUBCOMMAND}" == "create" ]]; then
   EMAIL="${2:-}"
   HANDLE="${3:-}"
-  DID="${4:-}"
+  CURR_DID="${4:-}"
 
   if [[ "${EMAIL}" == "" ]]; then
     read -p "Enter an email address (e.g. alice@${PDS_HOSTNAME}): " EMAIL
@@ -57,8 +57,8 @@ elif [[ "${SUBCOMMAND}" == "create" ]]; then
   if [[ "${HANDLE}" == "" ]]; then
     read -p "Enter a handle (e.g. alice.${PDS_HOSTNAME}): " HANDLE
   fi
-   if [[ "${DID}" == "" ]]; then
-    read -p "Enter a DID (e.g. did:plc:bxvb5jxj6mz3fdtbndw3cmor): " DID
+   if [[ "${CURR_DID}" == "" ]]; then
+    read -p "Enter a DID (e.g. did:plc:bxvb5jxj6mz3fdtbndw3cmor): " CURR_DID
   fi
 
 
@@ -75,7 +75,7 @@ elif [[ "${SUBCOMMAND}" == "create" ]]; then
     "https://${PDS_HOSTNAME}/xrpc/com.atproto.server.createInviteCode" | jq --raw-output '.code'
   )"
   RESULT="$(curl_cmd_post_nofail \
-    --data "{\"email\":\"${EMAIL}\", \"handle\":\"${HANDLE}\", \"password\":\"${PASSWORD}\", \"inviteCode\":\"${INVITE_CODE}\", \"did\":\"{${DID}}\"}" \
+    --data "{\"email\":\"${EMAIL}\", \"handle\":\"${HANDLE}\", \"password\":\"${PASSWORD}\", \"inviteCode\":\"${INVITE_CODE}\", \"did\":\"{${CURR_DID}}\"}" \
     "https://${PDS_HOSTNAME}/xrpc/com.atproto.server.createAccount"
   )"
 
