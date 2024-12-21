@@ -75,7 +75,7 @@ elif [[ "${SUBCOMMAND}" == "create" ]]; then
     "https://${PDS_HOSTNAME}/xrpc/com.atproto.server.createInviteCode" | jq --raw-output '.code'
   )"
   RESULT="$(curl_cmd_post_nofail \
-    --data "{\"email\":\"${EMAIL}\", \"handle\":\"${HANDLE}\", \"password\":\"${PASSWORD}\", \"inviteCode\":\"${INVITE_CODE}\", \"did\":\"{${CURR_DID}}\"}" \
+    --data "{\"email\":\"${EMAIL}\", \"handle\":\"${HANDLE}\", \"password\":\"${PASSWORD}\", \"inviteCode\":\"${INVITE_CODE}\", \"did\":\"${CURR_DID}\"}" \
     "https://${PDS_HOSTNAME}/xrpc/com.atproto.server.createAccount"
   )"
 
